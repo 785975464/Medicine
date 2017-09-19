@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D501药品清单</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script type="text/javascript" src="/medicine/jquery/jquery-2.1.1.min.js"></script>
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="/medicine/css/weui.css">
+    <link rel="stylesheet" type="text/css" href="/medicine/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/ghpages-materialize.css">
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="/medicine/materialize/js/materialize.min.js"></script>
+    <script type="text/javascript" src="/medicine/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/medicine/js/dataTables.bootstrap.js"></script>
+
+    <style type="text/css">
+        .myaddbtn{
+            margin: 20px 0px;
+        }
+        p{
+            font: 1.5rem "Microsoft YaHei";
+        }
+        #mytable{
+            /*width: 80%;*/
+        }
+        th{
+            right: -14px;
+        }
+        .myhiddenelement{
+            display: none;
+        }
+        /*.align-center{
+          text-align: center;
+        }*/
+        span{
+            width: 100px;
+            display:inline-block
+        }
+        .modalinfo-container{
+            width: 410px;
+            margin: 0 auto;
+        }
+        .row .col-sm-6 {
+            display: inline-block;
+        }
+        .row .col-sm-6:nth-child(2){
+            float: right;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<div class="container">
+    <div class="myaddbtn">
+        <button class="btn waves-effect waves-light blue lighten-1" onclick="_openModalFun();">添加</button>
+        <a type="button" class="btn waves-effect waves-light blue lighten-1" href="__MODULE__/Index/out">导出</a>
+    </div>
+
+    <table id="mytable" class="table bordered hoverable striped centered responsive-table">
+    </table>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <p>修改药品信息</p>
+            <li class="divider"></li>
+            <form class="form-horizontal" method="post">
+                <div class="modalinfo-container">
+                    <div class="input-field">
+                        <input type="hidden" id="edit_id"/>
+                    </div>
+                    <div class="input-field">
+                        <span>编号：</span>
+                        <input id="edit_medicineid" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>药品名称：</span>
+                        <input id="edit_name" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>CAS号：</span>
+                        <input id="edit_cas" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_community">社区</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>备注：</span>
+                        <input id="edit_remark" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <li class="divider"></li>
+            <button class="btn waves-effect waves-light blue lighten-1" name="action" style="margin-right:20px;margin-bottom:20px;" onclick="_updateFun();">保存</button>
+            <button class="btn waves-effect red" onclick="closeModalById(1);" style="margin-right:20px">取消</button>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <p>添加药品</p>
+            <li class="divider"></li>
+            <form class="form-horizontal" method="post">
+                <div class="modalinfo-container">
+                    <!-- <div class="input-field">
+                        <input type="hidden" id="id"/>
+                    </div> -->
+                    <div class="input-field">
+                        <span>编号：</span>
+                        <input id="medicineid" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>药品名称：</span>
+                        <input id="name" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>CAS号：</span>
+                        <input id="cas" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_community">社区</label> -->
+                    </div>
+                    <div class="input-field">
+                        <span>备注：</span>
+                        <input id="remark" type="text" style="width:300px !important;">
+                        <!-- <label for="edit_street">街道</label> -->
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <li class="divider"></li>
+            <button class="btn waves-effect waves-light blue lighten-1" name="action" style="margin-right:20px;margin-bottom:20px;" onclick="_addFun();">添加</button>
+            <button class="btn waves-effect red" onclick="closeModalById(2);"
+                    style="margin-right:20px">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var table;	//申明全局变量
+    $(document).ready( function () {
+
+        table = $('#mytable').DataTable({
+            "paging":true,
+            "pagingType":"full_numbers",
+            "lengthMenu":[10,25,50],
+            "processing": true,
+            // 'bStateSave': true,	//状态保存
+            // "searching": true, //是否开启搜索
+            //"serverSide": true,//开启服务器获取数据，true代表后台处理分页，false代表前台处理分页
+            "order": [[ 1, "asc" ]], //默认排序
+            "ajax":{ // 获取数据
+                "url":"medicine/getAll",
+                "dataType":"json" //返回来的数据形式
+            },
+            "columns":[ //定义列数据来源
+                {'title':"Id",'data':"id",'class':"myhiddenelement"},
+                {'title':"编号",'data':"medicineid"},
+                {'title':"药品名称",'data':"name"},
+                {'title':"CAS号",'data':"cas"},
+                {'title':"备注",'data':"remark"},
+                // {'title':"AddressID",'data':"a_id",'class':"myhiddenelement"},
+
+
+                // {'title':"District",'data':null,'class':"align-center"}, // 自定义列
+                {'title':"操作",'data':null}, // 自定义列
+                // {'title':"A",'data':'id','class':"myhiddenelement"},
+                // {'title':"01",'data':'id','class':"myhiddenelement"}
+            ],
+
+            "columnDefs": [
+                // {
+                //   "targets": [ 0 ],
+                //   "orderData": [ 6, 7 ]  //如果第一列进行排序，有相同数据则按照第二列顺序排列
+                // },
+                // 	{
+                //      	"targets":[3,4,5,6,7],
+                //      	"visible":false //隐藏列
+                //      },
+                // 	{
+                //      	"targets": [8],
+                //      	"render": function(data, type, row ,full) {
+                //      		return  row.community+"("+row.province+","+row.city+","+row.county+","+row.street+")";
+                //      	}
+                //      },
+                {
+                    "targets": [5],
+                    "render": function(data, type, row ,full) {
+                        return  "<button data-target='modal1' class='waves-effect waves-light btn ' onclick='_editFun(this)'>编辑</button>"+ "   <button name='btn-del' class='waves-effect waves-light btn red' onclick='_deleteFun("+data.id+")'>删除</button>";
+                    }
+                },
+                // {
+                //   "targets": [6],
+                //   "render": function(data, type, row ,full) {
+                //     return  row.medicineid.charAt(0);  //返回首字母
+                //   }
+                // },
+                // {
+                //   "targets": [7],
+                //   "render": function(data, type, row ,full) {
+                //     return  row.medicineid.substr(1,row.medicineid.length - 1);  //返回数字
+                //   }
+                // }
+            ],
+
+            "language":{ // 定义语言
+                "sProcessing":"加载中...",
+                "sLengthMenu":"每页显示 _MENU_ 条记录",
+                "sZeroRecords":"没有匹配的结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            }
+        });
+        // var dataTable = $('#mytable').dataTable();
+        // $("#searchbox").keyup(function() {
+        // 	dataTable.fnFilter(this.value);
+        // });
+        $("input[type='search']").focus();
+    });
+
+    function _openModalFun() {
+        $('#modal2').openModal({
+            ready:function(){
+                $("#medicineid").focus();
+            },
+            complete:function(){
+                $("input[type='search']").focus();
+            }
+        });
+    }
+    function _editFun(obj) {
+        $('#modal1').openModal({
+            ready:function(){
+                // console.log("123");
+                $("#edit_medicineid").focus();
+            },
+            complete:function(){
+                $("input[type='search']").focus();
+            }
+        });
+
+        var tr=obj.parentNode.parentNode; // 按钮的父节点的父节点是tr
+
+        // $("#row_id").val(tr.rowIndex);
+        $("#edit_id").val(tr.cells[0].innerText);
+        $("#edit_medicineid").val(tr.cells[1].innerText);
+        $("#edit_name").val(tr.cells[2].innerText);
+        $("#edit_cas").val(tr.cells[3].innerText);
+        $("#edit_remark").val(tr.cells[4].innerText);
+        // $("#edit_community").val(tr.cells[5].innerText);
+    }
+    function _deleteFun(id) {
+        if(!confirm('确定要删除吗？')){
+            return;
+        }
+        $.ajax({
+            "url":"__MODULE__/Index/delete_medicine_info",
+            data: {"id": id},
+            type: "post",
+            success: function (data) {
+                console.log(data);
+                if (data.indexOf("成功")>0) {
+                    start = $("#mytable").dataTable().fnSettings()._iDisplayStart;
+                    total = $("#mytable").dataTable().fnSettings().fnRecordsDisplay();
+
+                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
+
+                    if((total-start)==1){
+                        if (start > 0) {
+                            $("#mytable").dataTable().fnPageChange( 'previous', true );
+                            // table.fnPageChange( 'previous', true );
+                        }
+                    }
+                }
+                Materialize.toast(data, 2000);
+                $("input[type='search']").focus();
+            },
+            error: function (error) {
+                Materialize.toast("网络异常，请稍后再试！", 2000);
+                console.log(error);
+            }
+        });
+    }
+    function _updateFun(){
+        // alert($("#edit_id").val());
+        $.ajax({
+            url: "__MODULE__/Index/update_medicine_info",
+            type: "POST",
+            data:{"id":$("#edit_id").val(),
+                "medicineid":$("#edit_medicineid").val(),
+                "name":$("#edit_name").val(),
+                "cas":$("#edit_cas").val(),
+                "remark":$("#edit_remark").val()},
+            success:function(data){
+                if(data.indexOf("成功")>0){
+                    // $('#modal1').closeModal();
+                    closeModalById(1);
+                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
+                }
+                Materialize.toast(data, 2000); // 2000是Toast持续时间
+            },
+            error: function(data) {
+                //alert("系统异常，请稍后再试！");
+                Materialize.toast("网络异常，请稍后再试！", 2000);
+            }
+        });
+    }
+    function _addFun() {
+        // $('#modal2').openModal();
+        $.ajax({
+            url: "__MODULE__/Index/add_medicine_info",
+            type: "POST",
+            data:{
+                "medicineid":$("#medicineid").val(),
+                "name":$("#name").val(),
+                "cas":$("#cas").val(),
+                "remark":$("#remark").val()},
+            success:function(data){
+                if(data.indexOf("成功")>0){
+                    // $('#modal2').closeModal();
+                    closeModalById(2);
+                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
+
+                    $("#id").val("");
+                    $("#medicineid").val("");
+                    $("#name").val("");
+                    $("#cas").val("");
+                    $("#remark").val("");
+                }
+                Materialize.toast(data, 2000); // 2000是Toast持续时间
+            },
+            error: function(data) {
+                //alert("系统异常，请稍后再试！");
+                Materialize.toast("网络异常，请稍后再试！", 2000);
+            }
+        });
+    }
+    function closeModalById(id) {
+        $('#modal'+id).closeModal({
+            complete:function(){
+                $("input[type='search']").focus();
+            }
+        })
+    }
+</script>
+</body>
+</html>

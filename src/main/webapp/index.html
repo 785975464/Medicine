@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>my SSM index page</title>
+    <script src="js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -10,16 +11,17 @@
 <button type="button" onclick="selectUser()">onclick test</button>
 <script>
     function selectUser() {
-
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                document.getElementById("test").innerHTML = xmlhttp.responseText;
+        $.ajax({
+            url: "user/get",
+            type: "post",
+            data: {"id":1},
+            success: function (data) {
+                console.log("data:"+data);
+            },
+            error: function (err) {
+                console.log("err:"+err);
             }
-        }
-        xmlhttp.open("POST", "user/showUser.do", true);
-        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlhttp.send("id=1");
+        });
     }
 </script>
 </body>

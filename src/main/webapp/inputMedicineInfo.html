@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>药品回收</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="/medicine/css/weui.css">
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="/medicine/jquery/jquery-2.1.1.min.js"></script>
+    <style type="text/css">
+        main{
+            margin: 50px 30% 0px 30%;
+            padding: 30px;
+            border: solid 1px #bfb5b5;
+        }
+        .center{
+            text-align: center;
+        }
+        #recyclemedicine{
+            margin-top: 20px;
+            right: -25px;
+        }
+        #getextrabtn{
+            float: right;
+            cursor: pointer;
+        }
+        .button-sp-area{
+            text-align: center;
+        }
+        .divided{
+            border-top: solid 1px #bfb5b5;
+            margin: 20px 0px;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="page">
+        <div class="weui-flex">
+            <div class="weui-flex__item center">
+                <div class="weui-cells__title">药品ID</div>
+            </div>
+            <div class="weui-flex__item center">
+                <div class="weui-cells__title">回收数量</div>
+            </div>
+        </div>
+        <form>
+            <!-- 自动生成 -->
+        </form>
+        <div class="page__bd page__bd_spacing center">
+            <div class="button-sp-area">
+                <!-- <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="recyclemedicine">回收</a>
+                <img src="/medicine/images/medicine.jpg" width="50px" id="getextrabtn"> -->
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="addcolumns">添加栏</a>
+            </div>
+
+        </div>
+        <div><span id="result" style="color: red;display:block;"></span></div>
+
+        <div class="divided"></div>
+        <!-- <div class="weui-cells__title">Token</div> -->
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入微信链接" id="inputtoken"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="page__bd page__bd_spacing">
+            <div class="button-sp-area">
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="clearbtn">重置</a>
+                <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="registertoken">授权</a>
+            </div>
+        </div>
+        <div><span id="result2" style="color: red;"></span></div>
+
+        <!-- loading toast -->
+        <div id="loadingToast" style="display:none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    $(function(){
+        addForm();
+        $("input:eq(0)").focus();
+    });
+
+    $("#addcolumns").click(function(){
+        addForm();
+    });
+
+    $("#clearbtn").click(function(){
+        $("input").each(function() {
+            $(this).val("");
+        });
+        $("#result").html("");
+        $("#result2").html("");
+        $("input:eq(0)").focus();
+        // $("#inputtoken").focus();
+    });
+
+    $("#registertoken").click(function(){
+        $("#result").html("");
+        $("#result2").html("");
+        if ($("#loadingToast").css('display') != 'none') return;
+
+        $("#loadingToast").fadeIn(100);
+
+        $.ajax({
+            // url: "http://202.119.84.51:9090/smartsite/index.php/home/staff/pad/get",
+            // url: "http://192.168.1.111:8081/project/index.php/home/staff/pad/get",
+            // 获得文件列表
+            url: "__MODULE__/Medicine/registerToken",
+            // downloadfileurl:"http://192.168.1.111:8081/project/Public/Uploads/",
+            // url: "__MODULE__/Pad/getAllPads",
+            data: {"token": $("#inputtoken").val()},
+            type: "post",
+            // type: "get",
+            success: function (info) {
+                console.log(info);
+                // setTimeout(function () {
+                //        $("#loadingToast").fadeOut(100);
+                //    }, 500);
+
+                if (info.indexOf("超时")>0 || info.indexOf("失败")>0 ) {
+                    $("#result2").text(info);
+                    $("#inputtoken").val("").focus();
+                    // $("#inputtoken").focus();
+                    setTimeout(function () {
+                        $("#loadingToast").fadeOut(100);
+                    }, 500);
+                }
+                // location.href = 'showAllMedicine';
+                else{
+                    // location.href = 'utils';
+                    recyclemedicine();
+                }
+
+            },
+            error: function (error) {
+                // Materialize.toast("网络异常，请稍后再试！", 2000);
+                console.log(error);
+            }
+        });
+    });
+
+    // $("#recyclemedicine").click(function(){
+    function recyclemedicine(){
+        console.log("in recyclemedicine!");
+        $("#result").html("");
+        // if ($("#loadingToast").css('display') != 'none') return;
+
+        // $("#loadingToast").fadeIn(100);
+
+
+        $.ajax({
+            url: "__MODULE__/Medicine/show",
+            data: $("form").serialize(),
+            // data: {"medicineid": $("input[name='medicineid[]']").val(),"number": $("input[name='number[]']").val()},
+            type: "post",
+            success: function (info) {
+                $("#result").html(info);
+                console.log(info);
+                // location.href = 'showAllMedicine';
+                setTimeout(function () {
+                    $("#loadingToast").fadeOut(100);
+                }, 500);
+                // $("#medicineid").text();
+                // $("#number").text();
+            },
+            error: function (error) {
+                // Materialize.toast("网络异常，请稍后再试！", 2000);
+                $("#result").text(error);
+                console.log(error);
+            }
+        });
+    }
+
+    function addForm() {
+        for (var i = 0; i < 5 ; i++ ) {
+            $("form").append(		//由于需要保留原来的文本，因此使用append()
+                // document.querySelector("form").innerHTML +=
+                '<div class="weui-flex">'+
+                    '<div class="weui-flex__item">'+
+                        '<div class="weui-cells">'+
+                            '<div class="weui-cell">'+
+                                '<div class="weui-cell__bd">'+
+                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入药品ID" name="medicineid[]"/>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="weui-flex__item">'+
+                        '<div class="weui-cells">'+
+                            '<div class="weui-cell">'+
+                                '<div class="weui-cell__bd">'+
+                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入回收数量" name="number[]" />'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>');
+        }
+        $("input.medicineinfo").on("blur",function(){
+            // $(this).val($(this).val().replace(/ /g,''));		//替换掉空格
+            $(this).val($(this).val().replace(/[^\d]/g,''));	//保留数字
+        });
+        // $("input:eq(0)").focus();
+    }
+</script>
+</body>
+</html>
