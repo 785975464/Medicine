@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>药品回收</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="/medicine/css/weui.css">
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="/medicine/jquery/jquery-2.1.1.min.js"></script>
+    <style type="text/css">
+        main{
+            margin: 50px 30% 0px 30%;
+            padding: 30px;
+            border: solid 1px #bfb5b5;
+        }
+        .center{
+            text-align: center;
+        }
+        .weui-cells__title{
+            color: black;
+            font-size: 1.5rem;
+        }
+        
+        #init_btn{
+            margin-top: 15px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="page">
+        <!-- <div class="weui-flex">
+            <div class="weui-flex__item center">
+                <div class="weui-cells__title">药品ID</div>
+            </div>
+            <div class="weui-flex__item center">
+                <div class="weui-cells__title">回收数量</div>
+            </div>
+        </div> -->
+        <div class="page__bd">
+            <div class="weui-cells__title">选择要初始化的库存数量</div>
+            <div class="weui-cells weui-cells_radio">
+                <label class="weui-cell weui-check__label" for="x11">
+                    <div class="weui-cell__bd">
+                        <p>25（默认）</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio1" id="x11" value="25" checked="checked">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="x12">
+                    <div class="weui-cell__bd">
+                        <p>50</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio1" id="x12" value="50">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="x13">
+                    <div class="weui-cell__bd">
+                        <p>全部</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio1" id="x13" value="0">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="weui-cells__title">选择要更新的药品数量</div>
+            <div class="weui-cells weui-cells_radio">
+                <label class="weui-cell weui-check__label" for="x21">
+                    <div class="weui-cell__bd">
+                        <p>25（默认）</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio2" id="x21"  value="25" checked="checked">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="x22">
+                    <div class="weui-cell__bd">
+                        <p>50</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio2" id="x22" value="50">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="x23">
+                    <div class="weui-cell__bd">
+                        <p>全部</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="radio2" id="x23" value="0">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="page__bd page__bd_spacing center">
+            <div class="button-sp-area">
+                <a href="javascript:;" class="weui-btn weui-btn_warn" id="init_btn">初始化</a>
+                <!-- <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="addcolumns">添加栏</a> -->
+            </div>
+        </div>
+
+        <!-- loading toast -->
+        <div id="loadingToast" style="display:none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-loading weui-icon_toast"></i>
+                <p class="weui-toast__content">数据加载中</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+$(function () {
+    $("#init_btn").click(function () {
+        var pageSizeInventory = $("input[name=radio1]:checked").val();
+        var pageSizeCertificate = $("input[name=radio2]:checked").val();
+        console.log();
+        $.ajax({
+            url: "inventory/init",
+            data: {"pageSizeInventory" : pageSizeInventory, "pageSizeCertificate" : pageSizeCertificate},
+            type: "post",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
