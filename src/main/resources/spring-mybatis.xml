@@ -19,7 +19,7 @@
 
 
     <!-- 第二种方式：加载多个properties文件
-    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <bean id="configProperties" class="org.springframework.beans.factConfignfig.PropertiesFactoryBean">
         <property name="locations">
             <list>
                 <value>classpath:jdbc.properties</value>
@@ -28,7 +28,7 @@
         </property>
         <property name="fileEncoding" value="UTF-8"/>
     </bean>
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factConfignfig.PreferencesPlaceholderConfigurer">
         <property name="properties" ref="configProperties"/>
     </bean>
     -->

@@ -6,7 +6,7 @@ package com.jay.model;
 public class Medicine {
     private Integer id;
 
-    private String medicineid;
+    private String locationid;
 
     private String name;
 
@@ -22,12 +22,12 @@ public class Medicine {
         this.id = id;
     }
 
-    public String getMedicineid() {
-        return medicineid;
+    public String getLocationid() {
+        return locationid;
     }
 
-    public void setMedicineid(String medicineid) {
-        this.medicineid = medicineid;
+    public void setLocationid(String locationid) {
+        this.locationid = locationid;
     }
 
     public String getName() {
@@ -58,7 +58,7 @@ public class Medicine {
     public String toString() {
         return "Medicine{" +
                 "id=" + id +
-                ", medicineid='" + medicineid + '\'' +
+                ", locationid='" + locationid + '\'' +
                 ", name='" + name + '\'' +
                 ", cas='" + cas + '\'' +
                 ", remark='" + remark + '\'' +

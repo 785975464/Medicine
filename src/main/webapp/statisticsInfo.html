@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>统计</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="/medicine/css/weui.css">
+    <link rel="stylesheet" type="text/css" href="/medicine/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/ghpages-materialize.css">
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="/medicine/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/medicine/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/medicine/js/dataTables.bootstrap.js"></script>
+
+    <style type="text/css">
+        .container{
+            margin-top: 50px;
+        }
+        #mytable{
+            /*width: 80%;*/
+        }
+        th{
+            right: -14px;
+        }
+        .row .col-sm-6 {
+            display: inline-block;
+        }
+        .row .col-sm-6:nth-child(2){
+            float: right;
+        }
+        .align-center{
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<div class="container">
+    <table id="mytable" class="table bordered hoverable striped centered responsive-table">
+    </table>
+</div>
+
+<script>
+    var table;	//申明全局变量
+    $(document).ready( function () {
+
+        table = $('#mytable').DataTable({
+            "paging":true,
+            "pagingType":"full_numbers",
+            "lengthMenu":[10,25,50],
+            "processing": true,
+            // 'bStateSave': true,	//状态保存
+            "searching": true, //是否开启搜索
+            //"serverSide": true,//开启服务器获取数据，true代表后台处理分页，false代表前台处理分页
+            "order": [[ 0, "desc" ]], //默认排序
+            "ajax":{ // 获取数据
+                "url":"inventory/getAll",
+                "dataType":"json" //返回来的数据形式
+            },
+            "columns":[ //定义列数据来源
+                // {'title':"序号",'data':"id"},
+                {'title':"商品编号",'data':"goodsid"},
+                {'title':"药品序号",'data':"orderid"},
+                {'title':"药品名称",'data':"medicinename"},
+                {'title':"总量",'data':"amount"},
+                {'title':"余量",'data':"remain"},
+                {'title':"是否可回收",'data':null,'class':"align-center"}, // 自定义列
+                // {'title':"AddressID",'data':"a_id",'class':"myhiddenelement"},
+
+
+                // {'title':"District",'data':null,'class':"align-center"}, // 自定义列
+                // {'title':"action",'data':null,'class':"align-center"} // 自定义列
+            ],
+
+            "columnDefs": [
+            // 	{
+            //      	"targets":[3,4,5,6,7],
+            //      	"visible":false //隐藏列
+            //      },
+            	{
+                 	"targets": [5],
+                 	"render": function(data, type, row ,full) {
+                        if (row.remain>0) {
+                            return "待回收";
+                        }
+                        else{
+                            return "完成";
+                        }
+                 	}
+                 }
+            //      {
+            //      	"targets": [9],
+            //      	"render": function(data, type, row ,full) {
+            //      		return  "<button data-target='modal1' class='waves-effect waves-light btn ' onclick='_editFun(this)'>编辑</button>"+ "   <button name='btn-del' class='waves-effect waves-light btn red' onclick='_deleteFun(this)'>删除</button>";
+            //      	}
+            //      },
+             ],
+
+            "language":{ // 定义语言
+                "sProcessing":"加载中...",
+                "sLengthMenu":"每页显示 _MENU_ 条记录",
+                "sZeroRecords":"没有匹配的结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            }
+        });
+        // var dataTable = $('#mytable').dataTable();
+        // $("#searchbox").keyup(function() {
+        // 	dataTable.fnFilter(this.value);
+        // });
+    });
+</script>
+</body>
+</html>

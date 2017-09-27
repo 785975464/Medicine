@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jay.dao.InventoryDao">
+
+    <select id="getInventoryByGoodsid" resultType="Inventory" parameterType="String">
+        SELECT * FROM inventory WHERE goodsid = #{goodsid}
+    </select>
+
+    <select id="getInventoryByOrderid" resultType="Inventory" parameterType="String">
+        SELECT * FROM inventory WHERE orderid = #{orderid}
+    </select>
+
+    <select id="getAll" resultType="Inventory">
+        SELECT * FROM inventory
+    </select>
+
+    <update id="updateInventory" parameterType="Inventory">
+        UPDATE inventory
+        SET remain = #{remain}
+        WHERE goodsid = #{goodsid}
+    </update>
+    
+    <delete id="deleteInventoryByGoodsid" parameterType="String">
+            DELETE FROM inventory WHERE goodsid = #{goodsid}
+    </delete>
+
+    <insert id="insertInventory" parameterType="Inventory">
+        INSERT INTO inventory
+        (
+            goodsid,
+            createtime,
+            creator,
+            medicinename,
+            producer,
+            brand,
+            pack,
+            productid,
+            price,
+            amount,
+            remain,
+            totalquantity,
+            notes,
+            usequantity,
+            recyclequantity,
+            receivequantity,
+            orderid,
+            msds,
+            location,
+            cas,
+            molweight
+        )
+        VALUES
+        (
+            #{goodsid},
+            #{createtime},
+            #{creator},
+            #{medicinename},
+            #{producer},
+            #{brand},
+            #{pack},
+            #{productid},
+            #{price},
+            #{amount},
+            #{remain},
+            #{totalquantity},
+            #{notes},
+            #{usequantity},
+            #{recyclequantity},
+            #{receivequantity},
+            #{orderid},
+            #{msds},
+            #{location},
+            #{cas},
+            #{molweight}
+        )
+    </insert>
+</mapper>

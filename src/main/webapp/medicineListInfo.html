@@ -59,7 +59,7 @@
 <div class="container">
     <div class="myaddbtn">
         <button class="btn waves-effect waves-light blue lighten-1" onclick="_openModalFun();">添加</button>
-        <a type="button" class="btn waves-effect waves-light blue lighten-1" href="__MODULE__/Index/out">导出</a>
+        <a type="button" class="btn waves-effect waves-light blue lighten-1" href="medicine/exportExcel">导出</a>
     </div>
 
     <table id="mytable" class="table bordered hoverable striped centered responsive-table">
@@ -69,30 +69,26 @@
         <div class="modal-content">
             <p>修改药品信息</p>
             <li class="divider"></li>
-            <form class="form-horizontal" method="post">
+            <form class="form-horizontal" method="post" id="updateMedicineForm">
                 <div class="modalinfo-container">
                     <div class="input-field">
-                        <input type="hidden" id="edit_id"/>
+                        <input type="hidden" id="edit_id" name="id" />
                     </div>
                     <div class="input-field">
                         <span>编号：</span>
-                        <input id="edit_medicineid" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
+                        <input id="edit_locationid" name="locationid" type="text" style="width:300px !important;">
                     </div>
                     <div class="input-field">
                         <span>药品名称：</span>
-                        <input id="edit_name" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
+                        <input id="edit_name" name="name" type="text" style="width:300px !important;">
                     </div>
                     <div class="input-field">
                         <span>CAS号：</span>
-                        <input id="edit_cas" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_community">社区</label> -->
+                        <input id="edit_cas" name="cas" type="text" style="width:300px !important;">
                     </div>
                     <div class="input-field">
                         <span>备注：</span>
-                        <input id="edit_remark" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
+                        <input id="edit_remark" name="remark" type="text" style="width:300px !important;">
                     </div>
                 </div>
             </form>
@@ -109,29 +105,29 @@
         <div class="modal-content">
             <p>添加药品</p>
             <li class="divider"></li>
-            <form class="form-horizontal" method="post">
+            <form class="form-horizontal" method="post" id="addMedicineForm">
                 <div class="modalinfo-container">
                     <!-- <div class="input-field">
                         <input type="hidden" id="id"/>
                     </div> -->
                     <div class="input-field">
                         <span>编号：</span>
-                        <input id="medicineid" type="text" style="width:300px !important;">
+                        <input id="locationid" name="locationid" type="text" style="width:300px !important;">
                         <!-- <label for="edit_street">街道</label> -->
                     </div>
                     <div class="input-field">
                         <span>药品名称：</span>
-                        <input id="name" type="text" style="width:300px !important;">
+                        <input id="name" name="name" type="text" style="width:300px !important;">
                         <!-- <label for="edit_street">街道</label> -->
                     </div>
                     <div class="input-field">
                         <span>CAS号：</span>
-                        <input id="cas" type="text" style="width:300px !important;">
+                        <input id="cas" name="cas" type="text" style="width:300px !important;">
                         <!-- <label for="edit_community">社区</label> -->
                     </div>
                     <div class="input-field">
                         <span>备注：</span>
-                        <input id="remark" type="text" style="width:300px !important;">
+                        <input id="remark" name="remark" type="text" style="width:300px !important;">
                         <!-- <label for="edit_street">街道</label> -->
                     </div>
                 </div>
@@ -166,7 +162,7 @@
             },
             "columns":[ //定义列数据来源
                 {'title':"Id",'data':"id",'class':"myhiddenelement"},
-                {'title':"编号",'data':"medicineid"},
+                {'title':"位置编号",'data':"locationid"},
                 {'title':"药品名称",'data':"name"},
                 {'title':"CAS号",'data':"cas"},
                 {'title':"备注",'data':"remark"},
@@ -249,7 +245,7 @@
     function _openModalFun() {
         $('#modal2').openModal({
             ready:function(){
-                $("#medicineid").focus();
+                $("#locationid").focus();
             },
             complete:function(){
                 $("input[type='search']").focus();
@@ -260,7 +256,7 @@
         $('#modal1').openModal({
             ready:function(){
                 // console.log("123");
-                $("#edit_medicineid").focus();
+                $("#edit_locationid").focus();
             },
             complete:function(){
                 $("input[type='search']").focus();
@@ -271,7 +267,7 @@
 
         // $("#row_id").val(tr.rowIndex);
         $("#edit_id").val(tr.cells[0].innerText);
-        $("#edit_medicineid").val(tr.cells[1].innerText);
+        $("#edit_locationid").val(tr.cells[1].innerText);
         $("#edit_name").val(tr.cells[2].innerText);
         $("#edit_cas").val(tr.cells[3].innerText);
         $("#edit_remark").val(tr.cells[4].innerText);
@@ -282,25 +278,23 @@
             return;
         }
         $.ajax({
-            "url":"__MODULE__/Index/delete_medicine_info",
+            "url":"medicine/delete",
             data: {"id": id},
             type: "post",
             success: function (data) {
-                console.log(data);
-                if (data.indexOf("成功")>0) {
+                var info = eval("("+data+")");
+                // console.log(data);
+                if (info.msg.indexOf("成功")>0) {
                     start = $("#mytable").dataTable().fnSettings()._iDisplayStart;
                     total = $("#mytable").dataTable().fnSettings().fnRecordsDisplay();
-
                     table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
-
                     if((total-start)==1){
                         if (start > 0) {
                             $("#mytable").dataTable().fnPageChange( 'previous', true );
-                            // table.fnPageChange( 'previous', true );
                         }
                     }
                 }
-                Materialize.toast(data, 2000);
+                Materialize.toast(info.msg, 2000);
                 $("input[type='search']").focus();
             },
             error: function (error) {
@@ -312,20 +306,21 @@
     function _updateFun(){
         // alert($("#edit_id").val());
         $.ajax({
-            url: "__MODULE__/Index/update_medicine_info",
+            url: "medicine/update",
             type: "POST",
-            data:{"id":$("#edit_id").val(),
-                "medicineid":$("#edit_medicineid").val(),
-                "name":$("#edit_name").val(),
-                "cas":$("#edit_cas").val(),
-                "remark":$("#edit_remark").val()},
+            data: $("#updateMedicineForm").serialize(),
+            // data:{"id":$("#edit_id").val(),
+            //     "locationid":$("#edit_locationid").val(),
+            //     "name":$("#edit_name").val(),
+            //     "cas":$("#edit_cas").val(),
+            //     "remark":$("#edit_remark").val()},
             success:function(data){
-                if(data.indexOf("成功")>0){
-                    // $('#modal1').closeModal();
+                var info = eval("("+data+")");
+                if(info.msg.indexOf("成功")>0){
                     closeModalById(1);
                     table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
                 }
-                Materialize.toast(data, 2000); // 2000是Toast持续时间
+                Materialize.toast(info.msg, 2000);
             },
             error: function(data) {
                 //alert("系统异常，请稍后再试！");
@@ -336,26 +331,28 @@
     function _addFun() {
         // $('#modal2').openModal();
         $.ajax({
-            url: "__MODULE__/Index/add_medicine_info",
+            url: "medicine/add",
             type: "POST",
-            data:{
-                "medicineid":$("#medicineid").val(),
-                "name":$("#name").val(),
-                "cas":$("#cas").val(),
-                "remark":$("#remark").val()},
+            // data:{
+            //     "medicineid":$("#medicineid").val(),
+            //     "name":$("#name").val(),
+            //     "cas":$("#cas").val(),
+            //     "remark":$("#remark").val()},
+            data: $("#addMedicineForm").serialize(),
             success:function(data){
-                if(data.indexOf("成功")>0){
+                var info = eval("("+data+")");
+                if(info.msg.indexOf("成功")>0){
                     // $('#modal2').closeModal();
                     closeModalById(2);
                     table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
 
                     $("#id").val("");
-                    $("#medicineid").val("");
+                    $("#locationid").val("");
                     $("#name").val("");
                     $("#cas").val("");
                     $("#remark").val("");
                 }
-                Materialize.toast(data, 2000); // 2000是Toast持续时间
+                Materialize.toast(info.msg, 2000); // 2000是Toast持续时间
             },
             error: function(data) {
                 //alert("系统异常，请稍后再试！");

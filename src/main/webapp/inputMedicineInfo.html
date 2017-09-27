@@ -33,6 +33,24 @@
             border-top: solid 1px #bfb5b5;
             margin: 20px 0px;
         }
+        .weui-cells__title{
+            color: black;
+            font-size: 1.5rem;
+        }
+        ::-webkit-input-placeholder{
+            color: #999999;
+        }
+        .weui-cells:before {
+            border: 0px;
+            /*border-bottom: 1px solid #1AAD19;*/
+        }
+        .weui-cells:after {
+            border-top: 1px solid #1AAD19;
+            /*border-bottom: 1px solid #1AAD19;*/
+        }
+        #addcolumns{
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -52,16 +70,13 @@
         </form>
         <div class="page__bd page__bd_spacing center">
             <div class="button-sp-area">
-                <!-- <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="recyclemedicine">回收</a>
-                <img src="/medicine/images/medicine.jpg" width="50px" id="getextrabtn"> -->
                 <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="addcolumns">添加栏</a>
             </div>
 
         </div>
         <div><span id="result" style="color: red;display:block;"></span></div>
 
-        <div class="divided"></div>
-        <!-- <div class="weui-cells__title">Token</div> -->
+        <!-- <div class="divided"></div> -->
         <div class="weui-cells">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
@@ -110,6 +125,9 @@
     });
 
     $("#registertoken").click(function(){
+        if(checkForm()==false){                    //检查表单（删除空栏）
+            return;
+        }
         $("#result").html("");
         $("#result2").html("");
         if ($("#loadingToast").css('display') != 'none') return;
@@ -117,85 +135,52 @@
         $("#loadingToast").fadeIn(100);
 
         $.ajax({
-            // url: "http://202.119.84.51:9090/smartsite/index.php/home/staff/pad/get",
-            // url: "http://192.168.1.111:8081/project/index.php/home/staff/pad/get",
-            // 获得文件列表
-            url: "__MODULE__/Medicine/registerToken",
-            // downloadfileurl:"http://192.168.1.111:8081/project/Public/Uploads/",
-            // url: "__MODULE__/Pad/getAllPads",
-            data: {"token": $("#inputtoken").val()},
+            // 回收药品
+            // url: "__MODULE__/Medicine/registerToken",
+            url:"http://localhost:8080/medicine/medicine/recycle",
+            // data: {"tokenLink": $("#inputtoken").val()},
+            data: $.param({"tokenLink":$("#inputtoken").val()}) + '&' + $('form').serialize(),
             type: "post",
-            // type: "get",
             success: function (info) {
-                console.log(info);
-                // setTimeout(function () {
-                //        $("#loadingToast").fadeOut(100);
-                //    }, 500);
-
-                if (info.indexOf("超时")>0 || info.indexOf("失败")>0 ) {
-                    $("#result2").text(info);
-                    $("#inputtoken").val("").focus();
-                    // $("#inputtoken").focus();
-                    setTimeout(function () {
-                        $("#loadingToast").fadeOut(100);
-                    }, 500);
-                }
-                // location.href = 'showAllMedicine';
-                else{
-                    // location.href = 'utils';
-                    recyclemedicine();
-                }
+                var data = eval("("+info+")");
+                console.log(data);
+                setTimeout(function () {
+                    $("#loadingToast").fadeOut(100);
+                }, 500);
+                $("#result2").html(data.msg);
+                // if (info.indexOf("超时")>0 || info.indexOf("失败")>0 ) {
+                //     $("#result2").text(info);
+                //     $("#inputtoken").val("").focus();
+                //     setTimeout(function () {
+                //         $("#loadingToast").fadeOut(100);
+                //     }, 500);
+                // }
+                // else{
+                //     recyclemedicine();
+                // }
 
             },
             error: function (error) {
                 // Materialize.toast("网络异常，请稍后再试！", 2000);
                 console.log(error);
+                $("#result2").html(error);
+                setTimeout(function () {
+                    $("#loadingToast").fadeOut(100);
+                }, 500);
             }
         });
     });
 
-    // $("#recyclemedicine").click(function(){
-    function recyclemedicine(){
-        console.log("in recyclemedicine!");
-        $("#result").html("");
-        // if ($("#loadingToast").css('display') != 'none') return;
-
-        // $("#loadingToast").fadeIn(100);
-
-
-        $.ajax({
-            url: "__MODULE__/Medicine/show",
-            data: $("form").serialize(),
-            // data: {"medicineid": $("input[name='medicineid[]']").val(),"number": $("input[name='number[]']").val()},
-            type: "post",
-            success: function (info) {
-                $("#result").html(info);
-                console.log(info);
-                // location.href = 'showAllMedicine';
-                setTimeout(function () {
-                    $("#loadingToast").fadeOut(100);
-                }, 500);
-                // $("#medicineid").text();
-                // $("#number").text();
-            },
-            error: function (error) {
-                // Materialize.toast("网络异常，请稍后再试！", 2000);
-                $("#result").text(error);
-                console.log(error);
-            }
-        });
-    }
-
-    function addForm() {
-        for (var i = 0; i < 5 ; i++ ) {
+    function addForm(length=3) {
+        for (var i = 0; i < length ; i++ ) {
             $("form").append(		//由于需要保留原来的文本，因此使用append()
                 // document.querySelector("form").innerHTML +=
-                '<div class="weui-flex">'+
+                '<div class="weui-flex input-groups">'+
                     '<div class="weui-flex__item">'+
                         '<div class="weui-cells">'+
                             '<div class="weui-cell">'+
                                 '<div class="weui-cell__bd">'+
-                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入药品ID" name="medicineid[]"/>'+
+                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入药品ID" name="orderid"/>'+
                                 '</div>'+
                             '</div>'+
                         '</div>'+
@@ -204,7 +189,7 @@
                         '<div class="weui-cells">'+
                             '<div class="weui-cell">'+
                                 '<div class="weui-cell__bd">'+
-                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入回收数量" name="number[]" />'+
+                                    '<input class="weui-input medicineinfo" type="text" placeholder="输入回收数量" name="number" />'+
                                 '</div>'+
                             '</div>'+
                         '</div>'+
@@ -215,8 +200,53 @@
             // $(this).val($(this).val().replace(/ /g,''));		//替换掉空格
             $(this).val($(this).val().replace(/[^\d]/g,''));	//保留数字
         });
-        // $("input:eq(0)").focus();
+        $("input:eq(0)").focus();
     }
+
+    //检查表单
+    function checkForm() {
+        removeEmptyInputs();        //删除空栏
+        return checkContent();      //主要检查token
+    }
+
+    //删除空栏
+    function removeEmptyInputs(){
+        $("div.input-groups").each(function () {
+            var orderid = $(this).find("input[name=orderid]");
+            var number = $(this).find("input[name=number]");
+            if (orderid.val()=="" && number.val()=="") {
+                $(this).remove();
+            }
+        });
+    }
+
+    //主要检查token
+    function checkContent() {
+        if ($("div.input-groups").length<1) {
+            $("#result2").html("表单不能为空");
+            addForm(1);
+            return false;
+        }
+        var tokenLink = $("#inputtoken").val();
+        if (tokenLink.replace(/(^\s*)|(\s*$)/g,"")=="") {
+            $("#result2").html("token不能为空");
+            return false;
+        }
+        var start = tokenLink.indexOf("=");
+        var end = tokenLink.indexOf("&");
+        if ( end < 0 ) {
+            end = tokenLink.length-1;
+        }
+        var token = tokenLink.substring(start+1, end);
+        console.log("token为: "+token);
+        if (token.length!=32){
+            console.log("token长度错误");
+            $("#result2").html("token长度错误");
+            return false;
+        }
+        return true;
+    }
+    
 </script>
 </body>
 </html>

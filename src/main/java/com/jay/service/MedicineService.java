@@ -13,4 +13,11 @@ public interface MedicineService {
     Medicine selectMedicine(int id);
 
     List<Medicine> getAll();
+
+    int updateMedicine(Medicine medicine);
+
+    int deleteMedicine(int id);
+
+    void insertMedicine(Medicine medicine);
+
 }

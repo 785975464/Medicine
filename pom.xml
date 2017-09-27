@@ -214,17 +214,32 @@
             <version>1.8.1</version>
         </dependency>
 
+        <!-- poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
+        </dependency>
         <!--<dependency>-->
-            <!--<groupId>commons-httpclient</groupId>-->
-            <!--<artifactId>commons-httpclient</artifactId>-->
-            <!--<version>3.1</version>-->
+            <!--<groupId>org.apache.poi</groupId>-->
+            <!--<artifactId>poi-examples</artifactId>-->
+            <!--<version>3.7</version>-->
         <!--</dependency>-->
-      <!--<dependency>-->
-          <!--<groupId>org.apache.httpcomponents</groupId>-->
-          <!--<artifactId>httpcomponents-client</artifactId>-->
-          <!--<version>4.3</version>-->
-      <!--</dependency>-->
-
+        <!--<dependency>-->
+            <!--<groupId>org.apache.poi</groupId>-->
+            <!--<artifactId>poi-scratchpad</artifactId>-->
+            <!--<version>3.7</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.poi</groupId>-->
+            <!--<artifactId>poi-ooxml-schemas</artifactId>-->
+            <!--<version>3.7</version>-->
+        <!--</dependency>-->
     </dependencies>
 
   <build>

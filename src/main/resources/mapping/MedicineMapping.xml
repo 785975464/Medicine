@@ -9,4 +9,34 @@
     <select id="getAll" resultType="Medicine">
         SELECT * FROM medicine
     </select>
+
+    <update id="updateMedicine" parameterType="Medicine">
+        UPDATE medicine
+        SET locationid = #{locationid},
+            name = #{name},
+            cas = #{cas},
+            remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteMedicine" parameterType="int">
+        DELETE FROM medicine WHERE id = #{id}
+    </delete>
+
+    <insert id="insertMedicine" parameterType="Medicine">
+        INSERT INTO medicine
+        (
+            locationid,
+            name,
+            cas,
+            remark
+        )
+        VALUES
+        (
+            #{locationid},
+            #{name},
+            #{cas},
+            #{remark}
+        )
+    </insert>
 </mapper>

@@ -21,7 +21,12 @@ public class MedicineServiceImpl implements MedicineService {
         return this.medicineDao.selectMedicine(id);
     }
 
-    public List<Medicine> getAll() {
-        return this.medicineDao.getAll();
-    }
+    public List<Medicine> getAll() { return this.medicineDao.getAll(); }
+
+    public int updateMedicine(Medicine medicine){return this.medicineDao.updateMedicine(medicine);}
+
+    public int deleteMedicine(int id){return this.medicineDao.deleteMedicine(id);}
+
+    public void insertMedicine(Medicine medicine){this.medicineDao.insertMedicine(medicine);}
+
 }
