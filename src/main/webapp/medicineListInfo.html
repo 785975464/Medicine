@@ -23,18 +23,12 @@
         p{
             font: 1.5rem "Microsoft YaHei";
         }
-        #mytable{
-            /*width: 80%;*/
-        }
         th{
             right: -14px;
         }
         .myhiddenelement{
             display: none;
         }
-        /*.align-center{
-          text-align: center;
-        }*/
         span{
             width: 100px;
             display:inline-block
@@ -53,9 +47,6 @@
 
 </head>
 <body>
-
-
-
 <div class="container">
     <div class="myaddbtn">
         <button class="btn waves-effect waves-light blue lighten-1" onclick="_openModalFun();">添加</button>
@@ -93,7 +84,6 @@
                 </div>
             </form>
         </div>
-
         <div class="modal-footer">
             <li class="divider"></li>
             <button class="btn waves-effect waves-light blue lighten-1" name="action" style="margin-right:20px;margin-bottom:20px;" onclick="_updateFun();">保存</button>
@@ -107,33 +97,25 @@
             <li class="divider"></li>
             <form class="form-horizontal" method="post" id="addMedicineForm">
                 <div class="modalinfo-container">
-                    <!-- <div class="input-field">
-                        <input type="hidden" id="id"/>
-                    </div> -->
                     <div class="input-field">
                         <span>编号：</span>
                         <input id="locationid" name="locationid" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
                     </div>
                     <div class="input-field">
                         <span>药品名称：</span>
                         <input id="name" name="name" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
                     </div>
                     <div class="input-field">
                         <span>CAS号：</span>
                         <input id="cas" name="cas" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_community">社区</label> -->
                     </div>
                     <div class="input-field">
                         <span>备注：</span>
                         <input id="remark" name="remark" type="text" style="width:300px !important;">
-                        <!-- <label for="edit_street">街道</label> -->
                     </div>
                 </div>
             </form>
         </div>
-
         <div class="modal-footer">
             <li class="divider"></li>
             <button class="btn waves-effect waves-light blue lighten-1" name="action" style="margin-right:20px;margin-bottom:20px;" onclick="_addFun();">添加</button>
@@ -144,73 +126,38 @@
 </div>
 
 <script>
-    var table;	//申明全局变量
+    var table;
     $(document).ready( function () {
-
         table = $('#mytable').DataTable({
             "paging":true,
             "pagingType":"full_numbers",
             "lengthMenu":[10,25,50],
             "processing": true,
-            // 'bStateSave': true,	//状态保存
-            // "searching": true, //是否开启搜索
-            //"serverSide": true,//开启服务器获取数据，true代表后台处理分页，false代表前台处理分页
-            "order": [[ 1, "asc" ]], //默认排序
-            "ajax":{ // 获取数据
+            // 'bStateSave': true,      //状态保存
+            // "searching": true,       //是否开启搜索
+            //"serverSide": true,       //开启服务器获取数据，true代表后台处理分页，false代表前台处理分页
+            "order": [[ 1, "asc" ]],    //默认排序
+            "ajax":{                    // 获取数据
                 "url":"medicine/getAll",
-                "dataType":"json" //返回来的数据形式
+                "dataType":"json"       //返回来的数据形式
             },
-            "columns":[ //定义列数据来源
+            "columns":[                 //定义列数据来源
                 {'title':"Id",'data':"id",'class':"myhiddenelement"},
                 {'title':"位置编号",'data':"locationid"},
                 {'title':"药品名称",'data':"name"},
                 {'title':"CAS号",'data':"cas"},
                 {'title':"备注",'data':"remark"},
-                // {'title':"AddressID",'data':"a_id",'class':"myhiddenelement"},
-
-
-                // {'title':"District",'data':null,'class':"align-center"}, // 自定义列
-                {'title':"操作",'data':null}, // 自定义列
-                // {'title':"A",'data':'id','class':"myhiddenelement"},
-                // {'title':"01",'data':'id','class':"myhiddenelement"}
+                {'title':"操作",'data':null},         // 自定义列
             ],
-
             "columnDefs": [
-                // {
-                //   "targets": [ 0 ],
-                //   "orderData": [ 6, 7 ]  //如果第一列进行排序，有相同数据则按照第二列顺序排列
-                // },
-                // 	{
-                //      	"targets":[3,4,5,6,7],
-                //      	"visible":false //隐藏列
-                //      },
-                // 	{
-                //      	"targets": [8],
-                //      	"render": function(data, type, row ,full) {
-                //      		return  row.community+"("+row.province+","+row.city+","+row.county+","+row.street+")";
-                //      	}
-                //      },
                 {
                     "targets": [5],
                     "render": function(data, type, row ,full) {
                         return  "<button data-target='modal1' class='waves-effect waves-light btn ' onclick='_editFun(this)'>编辑</button>"+ "   <button name='btn-del' class='waves-effect waves-light btn red' onclick='_deleteFun("+data.id+")'>删除</button>";
                     }
-                },
-                // {
-                //   "targets": [6],
-                //   "render": function(data, type, row ,full) {
-                //     return  row.medicineid.charAt(0);  //返回首字母
-                //   }
-                // },
-                // {
-                //   "targets": [7],
-                //   "render": function(data, type, row ,full) {
-                //     return  row.medicineid.substr(1,row.medicineid.length - 1);  //返回数字
-                //   }
-                // }
+                }
             ],
-
-            "language":{ // 定义语言
+            "language":{                // 定义语言
                 "sProcessing":"加载中...",
                 "sLengthMenu":"每页显示 _MENU_ 条记录",
                 "sZeroRecords":"没有匹配的结果",
@@ -235,10 +182,6 @@
                 }
             }
         });
-        // var dataTable = $('#mytable').dataTable();
-        // $("#searchbox").keyup(function() {
-        // 	dataTable.fnFilter(this.value);
-        // });
         $("input[type='search']").focus();
     });
 
@@ -252,27 +195,24 @@
             }
         });
     }
+
     function _editFun(obj) {
         $('#modal1').openModal({
             ready:function(){
-                // console.log("123");
                 $("#edit_locationid").focus();
             },
             complete:function(){
                 $("input[type='search']").focus();
             }
         });
-
-        var tr=obj.parentNode.parentNode; // 按钮的父节点的父节点是tr
-
-        // $("#row_id").val(tr.rowIndex);
+        var tr=obj.parentNode.parentNode;                   // 按钮的父节点的父节点是tr
         $("#edit_id").val(tr.cells[0].innerText);
         $("#edit_locationid").val(tr.cells[1].innerText);
         $("#edit_name").val(tr.cells[2].innerText);
         $("#edit_cas").val(tr.cells[3].innerText);
         $("#edit_remark").val(tr.cells[4].innerText);
-        // $("#edit_community").val(tr.cells[5].innerText);
     }
+
     function _deleteFun(id) {
         if(!confirm('确定要删除吗？')){
             return;
@@ -283,11 +223,10 @@
             type: "post",
             success: function (data) {
                 var info = eval("("+data+")");
-                // console.log(data);
                 if (info.msg.indexOf("成功")>0) {
                     start = $("#mytable").dataTable().fnSettings()._iDisplayStart;
                     total = $("#mytable").dataTable().fnSettings().fnRecordsDisplay();
-                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
+                    table.ajax.reload(null, false);         // 刷新表格数据，分页信息不会重置
                     if((total-start)==1){
                         if (start > 0) {
                             $("#mytable").dataTable().fnPageChange( 'previous', true );
@@ -303,63 +242,50 @@
             }
         });
     }
+
     function _updateFun(){
-        // alert($("#edit_id").val());
         $.ajax({
             url: "medicine/update",
             type: "POST",
             data: $("#updateMedicineForm").serialize(),
-            // data:{"id":$("#edit_id").val(),
-            //     "locationid":$("#edit_locationid").val(),
-            //     "name":$("#edit_name").val(),
-            //     "cas":$("#edit_cas").val(),
-            //     "remark":$("#edit_remark").val()},
             success:function(data){
                 var info = eval("("+data+")");
                 if(info.msg.indexOf("成功")>0){
                     closeModalById(1);
-                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
+                    table.ajax.reload(null, false);         // 刷新表格数据，分页信息不会重置
                 }
                 Materialize.toast(info.msg, 2000);
             },
             error: function(data) {
-                //alert("系统异常，请稍后再试！");
                 Materialize.toast("网络异常，请稍后再试！", 2000);
             }
         });
     }
+
     function _addFun() {
-        // $('#modal2').openModal();
         $.ajax({
             url: "medicine/add",
             type: "POST",
-            // data:{
-            //     "medicineid":$("#medicineid").val(),
-            //     "name":$("#name").val(),
-            //     "cas":$("#cas").val(),
-            //     "remark":$("#remark").val()},
             data: $("#addMedicineForm").serialize(),
             success:function(data){
                 var info = eval("("+data+")");
                 if(info.msg.indexOf("成功")>0){
-                    // $('#modal2').closeModal();
                     closeModalById(2);
-                    table.ajax.reload(null, false);       // 刷新表格数据，分页信息不会重置
-
+                    table.ajax.reload(null, false);         // 刷新表格数据，分页信息不会重置
                     $("#id").val("");
                     $("#locationid").val("");
                     $("#name").val("");
                     $("#cas").val("");
                     $("#remark").val("");
                 }
-                Materialize.toast(info.msg, 2000); // 2000是Toast持续时间
+                Materialize.toast(info.msg, 2000);          // 2000是Toast持续时间
             },
             error: function(data) {
-                //alert("系统异常，请稍后再试！");
                 Materialize.toast("网络异常，请稍后再试！", 2000);
             }
         });
     }
+    
     function closeModalById(id) {
         $('#modal'+id).closeModal({
             complete:function(){

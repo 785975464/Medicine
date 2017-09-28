@@ -80,12 +80,13 @@ public class InventoryController {
      * @param request
      * @param response
      */
-    @RequestMapping("/init")
+    @RequestMapping(value = "/init", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public String initInventoryInfo(HttpServletRequest request, HttpServletResponse response) {
         List<Cookie> cookies;                       //获取cookie，用于后续登录
-        String loginUrl = Config.BASEURL + "/ajax/gapper/auth/gapper/login";                        //模拟登录url
-        String inventoryUrl = "http://inventory.njust.labmai.com/ajax/inventory/more/0/1";          //库存列表URL
+//        String loginUrl = Config.BASEURL + "/ajax/gapper/auth/gapper/login";                        //模拟登录url
+        String loginUrl = "http://inventory.njust.labmai.com/ajax/gapper/auth/gapper/login";          //模拟登录url
+        String inventoryUrl = "http://inventory.njust.labmai.com/ajax/inventory/more/0/1";            //库存列表URL
         int pageSizeInventory;                      //要更新的库存数量
         int pageSizeCertificate;                    //要更新的凭证数量
         List<Inventory> inventoryList;              //库存列表信息
@@ -101,7 +102,7 @@ public class InventoryController {
                 }catch (Exception e){
                     pageSizeInventory = Config.PAGESIZE;
                     pageSizeCertificate = Config.PAGESIZE;
-                    logger.error("pageSize参数错误！");
+                    logger.error("pageSize参数错误，已重置！");
                 }
             }catch (Exception e){
                 logger.error("初始化失败！"+e.getMessage());
@@ -111,7 +112,8 @@ public class InventoryController {
             try {
                 inventoryList = new ArrayList<Inventory>();
                 for (int i=0 ; i< pageSizeInventory/Config.PAGESIZE ; i++){
-                    inventoryUrl = Config.BASEURL + "/ajax/inventory/more/"+i*Config.PAGESIZE+"/1";
+//                    inventoryUrl = Config.BASEURL + "/ajax/inventory/more/"+i*Config.PAGESIZE+"/1";
+                    inventoryUrl = "http://inventory.njust.labmai.com/ajax/inventory/more/0/1";
                     inventoryList.addAll(myUtils.getInventoryList(inventoryUrl, cookies));
                 }
                 if (inventoryList == null){
@@ -119,8 +121,8 @@ public class InventoryController {
                     return myUtils.jsonMessage("获取库存列表信息为空！");
                 }
             }catch (Exception e){
-                logger.error("获取库存列表信息失败！"+e.getMessage());
-                return myUtils.jsonMessage("获取库存列表信息失败！");
+                logger.error("获取库存列表信息失败！原因："+e.getMessage());
+                return myUtils.jsonMessage("获取库存列表信息失败！"+e.getMessage());
             }
             //二、库存信息插入数据库
             List<Inventory> tempList;                //临时变量，保存库存信息

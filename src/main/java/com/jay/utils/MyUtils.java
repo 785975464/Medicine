@@ -148,20 +148,23 @@ public class MyUtils {
      * @param cookies
      * @return
      */
-    public List<Inventory> getInventoryList(String listUrl, List<Cookie> cookies){
+    public List<Inventory> getInventoryList(String listUrl, List<Cookie> cookies) throws Exception{
         List<Inventory> inventoryList = new ArrayList<Inventory>();
+        int inventoryListSize = 0;
+        List<Node> nodeList = new ArrayList<Node>();
+
+        Document inventoryListDoc = null;
         try {
-            Document inventoryListDoc = null;
-            try {
-                inventoryListDoc = Jsoup.connect(listUrl).cookie(cookies.get(0).getName(), cookies.get(0).getValue()).timeout(6000).get();
-            }catch (Exception e){
-                e.printStackTrace();
-                logger.info("连接超时！");
-                return null;
-            }
-            int size = inventoryListDoc.select("div").size();
-            logger.info("总共行数为: "+size);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            inventoryListDoc = Jsoup.connect(listUrl).cookie(cookies.get(0).getName(), cookies.get(0).getValue()).timeout(60000).get();
+        }catch (Exception e){
+//          e.printStackTrace();
+            logger.error("连接超时！"+e.getMessage());
+            throw new Exception("连接超时！");
+//          return null;
+        }
+        try {
+            inventoryListSize = inventoryListDoc.select("div").size();
+            logger.info("总共行数为: "+inventoryListSize);
             Element bodyElement = inventoryListDoc.select("body").get(0);
             bodyElement.select("i").remove();                               //删除i标签
             bodyElement.select("span").remove();
@@ -170,7 +173,6 @@ public class MyUtils {
             bodyElement.select("[value='']").remove();
 //            logger.info("标签内容为: "+inventoryListDoc.select("body").get(0).childNodes());
 //            logger.info("标签内容为: "+bodyElement.childNodes());
-            List<Node> nodeList = new ArrayList<Node>();
             Node node = null;
             Iterator<Node> iterator = bodyElement.childNodes().iterator();
             while (iterator.hasNext()){
@@ -179,9 +181,17 @@ public class MyUtils {
                     nodeList.add(node);
                 }
             }
-            Inventory inventory;    //暂存inventory
-            String goodsid;         //暂存goodsid
-            for (int i=0 ;i<size ; i++){
+        }catch (Exception e){
+//          e.printStackTrace();
+            logger.error("inventoryList解析失败！"+e.getMessage());
+            return null;
+        }
+
+        Inventory inventory;    //暂存inventory
+        String goodsid;         //暂存goodsid
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            for (int i=0 ;i<inventoryListSize ; i++){
                 inventory = new Inventory();
                 try {
                     goodsid = nodeList.get(0+i*9).toString().trim();
@@ -199,11 +209,14 @@ public class MyUtils {
                     logger.info("第"+i+"个inventory为："+inventory);
                     inventoryList.add(inventory);
                 }catch (Exception e){
-                    e.printStackTrace();
+//                    e.printStackTrace();
+                    logger.error("第"+i+"个inventory设置失败！"+e.getMessage());
+                    continue;
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("循环出现异常！"+e.getMessage());
         }
         return inventoryList;
     }

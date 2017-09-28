@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <!--Import materialize.css-->
     <link rel="stylesheet" href="/medicine/css/weui.css">
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="/medicine/materialize/css/ghpages-materialize.css">
 
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="/medicine/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/medicine/materialize/js/materialize.min.js"></script>
+
     <style type="text/css">
         main{
             margin: 50px 30% 0px 30%;
@@ -33,14 +37,6 @@
 
 <main>
     <div class="page">
-        <!-- <div class="weui-flex">
-            <div class="weui-flex__item center">
-                <div class="weui-cells__title">药品ID</div>
-            </div>
-            <div class="weui-flex__item center">
-                <div class="weui-cells__title">回收数量</div>
-            </div>
-        </div> -->
         <div class="page__bd">
             <div class="weui-cells__title">选择要初始化的库存数量</div>
             <div class="weui-cells weui-cells_radio">
@@ -108,7 +104,6 @@
         <div class="page__bd page__bd_spacing center">
             <div class="button-sp-area">
                 <a href="javascript:;" class="weui-btn weui-btn_warn" id="init_btn">初始化</a>
-                <!-- <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="addcolumns">添加栏</a> -->
             </div>
         </div>
 
@@ -126,6 +121,9 @@
 <script>
 $(function () {
     $("#init_btn").click(function () {
+        if ($("#loadingToast").css('display') != 'none') return;
+        $("#loadingToast").fadeIn(100);
+
         var pageSizeInventory = $("input[name=radio1]:checked").val();
         var pageSizeCertificate = $("input[name=radio2]:checked").val();
         console.log();
@@ -134,10 +132,19 @@ $(function () {
             data: {"pageSizeInventory" : pageSizeInventory, "pageSizeCertificate" : pageSizeCertificate},
             type: "post",
             success: function (data) {
-                console.log(data);
+                setTimeout(function () {
+                    $("#loadingToast").fadeOut(100);
+                }, 500);
+                var info = eval("("+data+")");
+                console.log(info);
+                Materialize.toast(info.msg, 2000);
             },
             error: function (err) {
+                setTimeout(function () {
+                    $("#loadingToast").fadeOut(100);
+                }, 500);
                 console.log(err);
+                Materialize.toast("网络异常，请稍后再试！", 2000);
             }
         });
     });

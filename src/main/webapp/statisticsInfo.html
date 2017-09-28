@@ -21,9 +21,6 @@
         .container{
             margin-top: 50px;
         }
-        #mytable{
-            /*width: 80%;*/
-        }
         th{
             right: -14px;
         }
@@ -37,54 +34,36 @@
             text-align: center;
         }
     </style>
-
 </head>
 <body>
-
-
-
 <div class="container">
     <table id="mytable" class="table bordered hoverable striped centered responsive-table">
     </table>
 </div>
 
 <script>
-    var table;	//申明全局变量
+    var table;
     $(document).ready( function () {
-
         table = $('#mytable').DataTable({
             "paging":true,
             "pagingType":"full_numbers",
             "lengthMenu":[10,25,50],
             "processing": true,
-            // 'bStateSave': true,	//状态保存
-            "searching": true, //是否开启搜索
-            //"serverSide": true,//开启服务器获取数据，true代表后台处理分页，false代表前台处理分页
-            "order": [[ 0, "desc" ]], //默认排序
-            "ajax":{ // 获取数据
+            "searching": true,
+            "order": [[ 0, "desc" ]],
+            "ajax":{
                 "url":"inventory/getAll",
-                "dataType":"json" //返回来的数据形式
+                "dataType":"json"
             },
-            "columns":[ //定义列数据来源
-                // {'title':"序号",'data':"id"},
+            "columns":[
                 {'title':"商品编号",'data':"goodsid"},
                 {'title':"药品序号",'data':"orderid"},
                 {'title':"药品名称",'data':"medicinename"},
                 {'title':"总量",'data':"amount"},
                 {'title':"余量",'data':"remain"},
-                {'title':"是否可回收",'data':null,'class':"align-center"}, // 自定义列
-                // {'title':"AddressID",'data':"a_id",'class':"myhiddenelement"},
-
-
-                // {'title':"District",'data':null,'class':"align-center"}, // 自定义列
-                // {'title':"action",'data':null,'class':"align-center"} // 自定义列
+                {'title':"是否可回收",'data':null,'class':"align-center"}
             ],
-
             "columnDefs": [
-            // 	{
-            //      	"targets":[3,4,5,6,7],
-            //      	"visible":false //隐藏列
-            //      },
             	{
                  	"targets": [5],
                  	"render": function(data, type, row ,full) {
@@ -96,15 +75,8 @@
                         }
                  	}
                  }
-            //      {
-            //      	"targets": [9],
-            //      	"render": function(data, type, row ,full) {
-            //      		return  "<button data-target='modal1' class='waves-effect waves-light btn ' onclick='_editFun(this)'>编辑</button>"+ "   <button name='btn-del' class='waves-effect waves-light btn red' onclick='_deleteFun(this)'>删除</button>";
-            //      	}
-            //      },
              ],
-
-            "language":{ // 定义语言
+            "language":{
                 "sProcessing":"加载中...",
                 "sLengthMenu":"每页显示 _MENU_ 条记录",
                 "sZeroRecords":"没有匹配的结果",
@@ -129,10 +101,6 @@
                 }
             }
         });
-        // var dataTable = $('#mytable').dataTable();
-        // $("#searchbox").keyup(function() {
-        // 	dataTable.fnFilter(this.value);
-        // });
     });
 </script>
 </body>

@@ -42,11 +42,9 @@
         }
         .weui-cells:before {
             border: 0px;
-            /*border-bottom: 1px solid #1AAD19;*/
         }
         .weui-cells:after {
             border-top: 1px solid #1AAD19;
-            /*border-bottom: 1px solid #1AAD19;*/
         }
         #addcolumns{
             margin-top: 15px;
@@ -54,7 +52,6 @@
     </style>
 </head>
 <body>
-
 <main>
     <div class="page">
         <div class="weui-flex">
@@ -76,7 +73,6 @@
         </div>
         <div><span id="result" style="color: red;display:block;"></span></div>
 
-        <!-- <div class="divided"></div> -->
         <div class="weui-cells">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
@@ -121,7 +117,6 @@
         $("#result").html("");
         $("#result2").html("");
         $("input:eq(0)").focus();
-        // $("#inputtoken").focus();
     });
 
     $("#registertoken").click(function(){
@@ -136,9 +131,7 @@
 
         $.ajax({
             // 回收药品
-            // url: "__MODULE__/Medicine/registerToken",
             url:"http://localhost:8080/medicine/medicine/recycle",
-            // data: {"tokenLink": $("#inputtoken").val()},
             data: $.param({"tokenLink":$("#inputtoken").val()}) + '&' + $('form').serialize(),
             type: "post",
             success: function (info) {
@@ -148,20 +141,8 @@
                     $("#loadingToast").fadeOut(100);
                 }, 500);
                 $("#result2").html(data.msg);
-                // if (info.indexOf("超时")>0 || info.indexOf("失败")>0 ) {
-                //     $("#result2").text(info);
-                //     $("#inputtoken").val("").focus();
-                //     setTimeout(function () {
-                //         $("#loadingToast").fadeOut(100);
-                //     }, 500);
-                // }
-                // else{
-                //     recyclemedicine();
-                // }
-
             },
             error: function (error) {
-                // Materialize.toast("网络异常，请稍后再试！", 2000);
                 console.log(error);
                 $("#result2").html(error);
                 setTimeout(function () {
@@ -174,7 +155,6 @@
     function addForm(length=3) {
         for (var i = 0; i < length ; i++ ) {
             $("form").append(		//由于需要保留原来的文本，因此使用append()
-                // document.querySelector("form").innerHTML +=
                 '<div class="weui-flex input-groups">'+
                     '<div class="weui-flex__item">'+
                         '<div class="weui-cells">'+
@@ -246,7 +226,6 @@
         }
         return true;
     }
-    
 </script>
 </body>
 </html>
